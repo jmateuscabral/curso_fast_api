@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "secao-02"
+version = "0.1.0"
+description = ""
+authors = ["Mateus Cabral <jmateuscabral@gmail.com>"]
+readme = "README.md"
+packages = [{include = "secao_02"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.0"
+gunicorn = "^20.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
