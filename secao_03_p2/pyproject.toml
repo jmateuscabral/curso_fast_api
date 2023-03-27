@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "secao-03-p2"
+version = "0.1.0"
+description = ""
+authors = ["Mateus Cabral <jmateus@cge.pi.gov.br>"]
+readme = "README.md"
+packages = [{include = "secao_03_p2"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.95.0"
+uvicorn = "^0.21.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

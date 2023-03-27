@@ -1,14 +1,18 @@
 [tool.poetry]
-name = "fastapiproject"
+name = "secao-05"
 version = "0.1.0"
 description = ""
-authors = ["Mateus Cabral <jmateuscabral@gmail.com>"]
+authors = ["Mateus Cabral <jmateus@cge.pi.gov.br>"]
 readme = "README.md"
+packages = [{include = "secao_05"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 fastapi = "^0.95.0"
 uvicorn = "^0.21.1"
+psycopg2-binary = "^2.9.5"
+asyncpg = "^0.27.0"
+sqlmodel = "^0.0.8"
 
 
 [build-system]

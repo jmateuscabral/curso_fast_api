@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any, Dict, List
 from fastapi import (
     FastAPI,
     HTTPException,
@@ -6,51 +6,49 @@ from fastapi import (
     Path,
     Query,
     Header,
+    Depends,
     status,
 )
 # from fastapi.responses import JSONResponse
+from time import sleep
 
-from models import Curso
-
-app = FastAPI()
-
-
-cursos = {
-    1: {
-        'titulo': 'Programação com Python',
-        'aulas': 120,
-        'horas': 62,
-    },
-    2: {
-        'titulo': 'Python Assíncrono',
-        'aulas': 34,
-        'horas': 11,
-    },
-    3: {
-        'titulo': 'FastAPI',
-        'aulas': 86,
-        'horas': 27,
-    },
-}
+from models import Curso, cursos
 
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
+def fake_db():
+    try:
+        print('Abrindo conexão com o Banco de Dados ...\n')
+        sleep(1)
+    finally:
+        print('Fechando conexão com o Banco de Dados ...\n')
+        sleep(1)
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
+app = FastAPI(
+    title='API de Cursos da Geek University',
+    version='0.0.1',
+    description='API para estudos de FastAPI Pytho n',
+)
 
 
-@app.get('/cursos')
-async def get_cursos():
+@app.get(
+    '/cursos',
+    description='Retorna todos os cursos disponíveis.',
+    summary='Retorna todos os cursos',
+    response_model=List[Curso],
+    response_description='Cursos encontrados com sucesso'
+)
+async def get_cursos(db: Any = Depends(fake_db)):
     return cursos
 
 
-@app.get('/cursos/{curso_id}')
-async def get_curso(curso_id: int = Path(title='ID do curso', description='O ID deve ser entre 1 e 2', gt=0, lt=3)):
+@app.get(
+    '/cursos/{curso_id}',
+    description='Retorna um curso com o ID especificado ou um dicionário vazio.',
+    summary='Retorna um curso',
+    response_model=Curso
+)
+async def get_curso(curso_id: int = Path(title='ID do curso', description='O ID deve ser entre 1 e 2', gt=0, lt=3, ), db: Any = Depends(fake_db)):
     try:
         curso = cursos[curso_id]
         return curso
@@ -58,16 +56,28 @@ async def get_curso(curso_id: int = Path(title='ID do curso', description='O ID 
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Curso não encontrado')
 
 
-@app.post('/cursos', status_code=status.HTTP_201_CREATED)
-async def post_cursos(curso: Curso):
+@app.post(
+    '/cursos',
+    status_code=status.HTTP_201_CREATED,
+    description='Cria um novo curso no Banco de Dados.',
+    summary='Cria um curso',
+    response_model=Curso
+)
+async def post_cursos(curso: Curso, db: Any = Depends(fake_db)):
     next_id: int = len(cursos) + 1
-    cursos[next_id] = curso
-    del curso.id
+    curso.id = next_id
+    cursos.append(curso)
+    # del curso.id
     return curso
 
 
-@app.put('/cursos/{curso_id}')
-async def post_curso(curso_id: int, curso: Curso):
+@app.put(
+    '/cursos/{curso_id}',
+    description='Atualiza o curso do ID especificado.',
+    summary='Atualiza um curso',
+    response_model=Curso
+)
+async def post_curso(curso_id: int, curso: Curso, db: Any = Depends(fake_db)):
     if curso_id in cursos:
         cursos[curso_id] = curso
         del curso.id
@@ -76,8 +86,12 @@ async def post_curso(curso_id: int, curso: Curso):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Não existe curso com o ID')
 
 
-@app.delete('/cursos/{curso_id}')
-async def delete_curso(curso_id: int):
+@app.delete(
+    '/cursos/{curso_id}',
+    description='Deleta o curso do ID.',
+    summary='Deleta um curso'
+)
+async def delete_curso(curso_id: int, db: Any = Depends(fake_db)):
     if curso_id in cursos:
         curso = cursos[curso_id]
         del cursos[curso_id]
