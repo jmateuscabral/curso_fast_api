@@ -28,7 +28,7 @@ async def get_session() -> Generator:
 
 async def get_current_user(
         db: Session = Depends(get_session),
-        token:str = Depends(oauth2_schema)
+        token: str = Depends(oauth2_schema)
 ) -> UsuarioModel:
 
     credential_exception: HTTPException = HTTPException(
