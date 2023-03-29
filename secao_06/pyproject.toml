@@ -2,17 +2,22 @@
 name = "secao-06"
 version = "0.1.0"
 description = ""
-authors = ["Mateus Cabral <jmateuscabral@gmail.com>"]
+authors = ["Mateus Cabral <jmateus@cge.pi.gov.br>"]
 readme = "README.md"
 packages = [{include = "secao_06"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.95.0"
+sqlalchemy = "^2.0.7"
 uvicorn = "^0.21.1"
-psycopg2-binary = "^2.9.5"
 asyncpg = "^0.27.0"
-cryptography = "^40.0.1"
+python-jose = "^3.3.0"
+pytz = "^2023.3"
+passlib = "^1.7.4"
+email-validator = "^1.3.1"
+python-multipart = "^0.0.6"
+bcrypt = "^4.0.1"
 
 
 [build-system]

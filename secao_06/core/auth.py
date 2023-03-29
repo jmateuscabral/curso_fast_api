@@ -21,7 +21,7 @@ oauth2_schema = OAuth2PasswordBearer(
 )
 
 
-async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional(UsuarioModel):
+async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional[UsuarioModel]:
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.email == email)
         result = await session.execute(query)
@@ -30,8 +30,7 @@ async def autenticar(email: EmailStr, senha: str, db: AsyncSession) -> Optional(
             return None
         if not verificar_senha(senha, usuario.senha):
             return None
-        else:
-            return usuario
+        return usuario
 
 
 def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
@@ -51,7 +50,7 @@ def _criar_token(tipo_token: str, tempo_vida: timedelta, sub: str) -> str:
     payload['iat'] = datetime.now(tz=sp)
     payload['sub'] = str(sub)
 
-    return jwt.encode(payload, settings.JWTSecret, algorithm=settings.ALGORITHM)
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.ALGORITHM)
 
 
 def criar_token_acesso(sub: str) -> str:

@@ -54,7 +54,7 @@ async def get_artigos(db: AsyncSession = Depends(get_session)):
 async def get_artigo(artigo_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == artigo_id)
-        result = session.execute(query)
+        result = await session.execute(query)
         artigo: ArtigoModel = result.scalars().unique().one_or_none()
 
         if artigo:
@@ -68,7 +68,7 @@ async def get_artigo(artigo_id: int, db: AsyncSession = Depends(get_session)):
 async def put_artigo(artigo_id: int, artigo: ArtigoSchema, usuario_logado: UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == artigo_id)
-        result = session.execute(query)
+        result = await session.execute(query)
         artigo_up: ArtigoModel = result.scalars().unique().one_or_none()
 
         if artigo_up:
@@ -92,7 +92,7 @@ async def put_artigo(artigo_id: int, artigo: ArtigoSchema, usuario_logado: Usuar
 
 
 # DELETE Artigo
-@router.delete('/{artigo_id}', response_model=ArtigoSchema, status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{artigo_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_artigo(artigo_id: int, usuario_logado: UsuarioModel = Depends(get_current_user), db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == artigo_id).filter(ArtigoModel.usuario_id == usuario_logado.id)
@@ -102,7 +102,7 @@ async def delete_artigo(artigo_id: int, usuario_logado: UsuarioModel = Depends(g
         if artigo_del:
             await session.delete(artigo_del)
             await session.commit()
-            return Response(status_code=status.HTTP_204_NO_CONTENT)
+            # return Response(status_code=status.HTTP_204_NO_CONTENT)
         else:
             raise HTTPException(detail='Artigo não encontrado.', status_code=status.HTTP_404_NOT_FOUND)
 

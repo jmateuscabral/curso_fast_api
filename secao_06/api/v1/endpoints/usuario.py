@@ -49,8 +49,7 @@ async def get_usuarios(db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(UsuarioModel)
         result = await session.execute(query)
-        usuarios: List[UsuarioSchemaBase] = result.scalars()
-
+        usuarios: List[UsuarioSchemaBase] = result.scalars().unique().all()
         return usuarios
 
 
@@ -110,7 +109,7 @@ async def delete_usuario(usuario_id: int, db: AsyncSession = Depends(get_session
         if usuario_del:
             await session.delete(usuario_del)
             await session.commit()
-            return Response(status.HTTP_204_NO_CONTENT)
+            # return Response(status.HTTP_204_NO_CONTENT)
         else:
             raise HTTPException(detail='Usuário não encontrado.', status_code=status.HTTP_404_NOT_FOUND)
 
